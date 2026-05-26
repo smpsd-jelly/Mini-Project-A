@@ -8,7 +8,7 @@ CREATE TABLE accounts (
     phone_number VARCHAR(20) NOT NULL,
     account_type VARCHAR(20) NOT NULL
     CHECK (account_type IN ('SAVING', 'CURRENT')),
-    balance DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    balance DECIMAL(15, 2) NOT NULL DEFAULT 0.00   CHECK (balance >= 0),
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     CHECK (status IN ('ACTIVE','CLOSED')),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
