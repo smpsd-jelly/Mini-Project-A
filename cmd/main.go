@@ -5,6 +5,9 @@ import (
 	"os"
 	"time"
 
+	accountsHttp "mini-project-a/internal/accounts/adapter/inbound/http"
+	accountsPostgres "mini-project-a/internal/accounts/adapter/outbound/postgres"
+	"mini-project-a/internal/accounts/core"
 	"mini-project-a/internal/infrastructure/database"
 
 	"github.com/gin-gonic/gin"
@@ -31,6 +34,14 @@ func main() {
 
 	time.Local = loc
 	router := gin.Default()
+
+	api := router.Group("/api/v1")
+
+	accountsRepo := accountsPostgres.NewAccountPostgresRepository(db)
+	accountsService := core.NewAccountsService(accountsRepo)
+	accountsHandler := accountsHttp.NewAccountsHandler(accountsService)
+
+	accountsHttp.RegisterAccountsRoutes(api, accountsHandler)
 
 	port := os.Getenv("APP_PORT")
 	if port == "" {
