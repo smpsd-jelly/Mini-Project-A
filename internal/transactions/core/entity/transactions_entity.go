@@ -4,7 +4,7 @@ import "time"
 
 type Transactions struct {
 	ID              int64
-	account_id      int64
+	AccountID       int64
 	TransactionType string
 	Amount          float64
 	BalanceBefore   float64

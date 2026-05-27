@@ -9,6 +9,8 @@ import (
 	accountsPostgres "mini-project-a/internal/accounts/adapter/outbound/postgres"
 	"mini-project-a/internal/accounts/core"
 	"mini-project-a/internal/infrastructure/database"
+	transactionsPostgres "mini-project-a/internal/transactions/adapter/outbound/postgres"
+	transactionsCore "mini-project-a/internal/transactions/core"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -37,8 +39,13 @@ func main() {
 
 	api := router.Group("/api/v1")
 
+	transactionsRepo :=
+		transactionsPostgres.NewTransactionsPostgresRepository(db)
+	transactionsService :=
+		transactionsCore.NewTransactionsService(transactionsRepo)
+
 	accountsRepo := accountsPostgres.NewAccountPostgresRepository(db)
-	accountsService := core.NewAccountsService(accountsRepo)
+	accountsService := core.NewAccountsService(accountsRepo, transactionsService)
 	accountsHandler := accountsHttp.NewAccountsHandler(accountsService)
 
 	accountsHttp.RegisterAccountsRoutes(api, accountsHandler)
