@@ -2,10 +2,8 @@ package http
 
 import (
 	"net/http"
-	"time"
 
 	"mini-project-a/internal/accounts/core"
-	"mini-project-a/internal/accounts/core/entity"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,17 +28,9 @@ func (h *AccountsHandler) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	account := &entity.Accounts{
-		OwnerName:   req.OwnerName,
-		CitizenID:   req.CitizenID,
-		PhoneNumber: req.PhoneNumber,
-		AccountType: req.AccountType,
-		Balance:     req.Balance,
-		Status:      "ACTIVE",
-		CreatedAt:   time.Now(),
-	}
+	account := req.ToAccountEntity()
 
-	err := h.accountsService.CreateAccount(account)
+	_, err := h.accountsService.CreateAccount(account)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),

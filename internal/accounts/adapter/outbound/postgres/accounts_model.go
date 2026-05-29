@@ -18,6 +18,15 @@ type Accounts struct {
 	UpdatedAt     *time.Time `db:"updated_at"`
 }
 
+type CreateAccountModel struct {
+	OwnerName   string  `db:"owner_name"`
+	CitizenID   string  `db:"citizen_id"`
+	PhoneNumber string  `db:"phone_number"`
+	AccountType string  `db:"account_type"`
+	Balance     float64 `db:"balance"`
+	Status      string  `db:"status"`
+}
+
 func (a *Accounts) ToEntity() *entity.Accounts {
 	return &entity.Accounts{
 		ID:            a.ID,
