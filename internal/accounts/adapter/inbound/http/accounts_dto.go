@@ -11,6 +11,14 @@ type CreateAccountRequest struct {
 	Status      string  `json:"status" validate:"required,oneof=ACTIVE"`
 }
 
+type GetAccountDetailResponse struct {
+	AccountNumber string  `json:"account_number"`
+	OwnerName     string  `json:"owner_name"`
+	AccountType   string  `json:"account_type"`
+	Balance       float64 `json:"balance"`
+	Status        string  `json:"status"`
+}
+
 func (r *CreateAccountRequest) ToAccountEntity() *entity.Accounts {
 	return &entity.Accounts{
 		OwnerName:   r.OwnerName,
@@ -19,5 +27,15 @@ func (r *CreateAccountRequest) ToAccountEntity() *entity.Accounts {
 		AccountType: r.AccountType,
 		Balance:     r.Balance,
 		Status:      "ACTIVE",
+	}
+}
+
+func ToGetAccountDetailResponse(account *entity.Accounts) GetAccountDetailResponse {
+	return GetAccountDetailResponse{
+		AccountNumber: account.AccountNumber,
+		OwnerName:     account.OwnerName,
+		AccountType:   account.AccountType,
+		Balance:       account.Balance,
+		Status:        account.Status,
 	}
 }

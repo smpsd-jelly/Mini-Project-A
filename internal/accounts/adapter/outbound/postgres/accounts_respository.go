@@ -43,3 +43,25 @@ func (r *AccountPostgresRepository) CreateAccount(account *entity.Accounts) (*en
 	result := output.ToEntity()
 	return result, nil
 }
+
+func (r *AccountPostgresRepository) GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error) {
+	query := `
+		SELECT 
+			account_number,
+			owner_name,
+			account_type,
+			balance,
+			status
+		FROM accounts
+		WHERE account_number = $1
+	`
+
+	var output Accounts
+
+	err := r.db.Get(&output, query, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return output.ToEntity(), nil
+}
