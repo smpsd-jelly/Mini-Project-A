@@ -3,47 +3,32 @@ package core
 import (
 	"mini-project-a/internal/accounts/core/entity"
 	accountsPort "mini-project-a/internal/accounts/port"
-	transactionsCore "mini-project-a/internal/transactions/core"
-	transactionEntity "mini-project-a/internal/transactions/core/entity"
-	"time"
 )
 
 type AccountsService struct {
-	accountsRepo        accountsPort.AccountsRepository
-	transactionsService *transactionsCore.TransactionsService
+	accountsRepo       accountsPort.AccountsRepository
+	initialDepositPort accountsPort.InitialDepositPort
 }
 
-func NewAccountsService(accountsRepo accountsPort.AccountsRepository, transactionsService *transactionsCore.TransactionsService) *AccountsService {
+func NewAccountsService(accountsRepo accountsPort.AccountsRepository, initialDepositPort accountsPort.InitialDepositPort) *AccountsService {
 	return &AccountsService{
-		accountsRepo:        accountsRepo,
-		transactionsService: transactionsService,
+		accountsRepo:       accountsRepo,
+		initialDepositPort: initialDepositPort,
 	}
 }
 
-func (s *AccountsService) CreateAccount(account *entity.Accounts) error {
-	err := s.accountsRepo.CreateAccount(account)
+func (s *AccountsService) CreateAccount(account *entity.Accounts) (*entity.Accounts, error) {
+	result, err := s.accountsRepo.CreateAccount(account)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if account.Balance > 0 {
-		description := "Initial deposit"
-
-		transaction := &transactionEntity.Transactions{
-			AccountID:       account.ID,
-			TransactionType: "DEPOSIT",
-			Amount:          account.Balance,
-			BalanceBefore:   0,
-			BalanceAfter:    account.Balance,
-			Description:     &description,
-			CreatedAt:       time.Now(),
-		}
-
-		err = s.transactionsService.CreateTransaction(transaction)
+		err = s.initialDepositPort.CreateInitialDeposit(result.ID, account.Balance)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	return nil
+	return result, nil
 }
