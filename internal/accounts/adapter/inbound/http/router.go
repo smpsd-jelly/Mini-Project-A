@@ -7,4 +7,5 @@ func RegisterAccountsRoutes(router *gin.RouterGroup, accountsHandler *AccountsHa
 
 	accounts.POST("", accountsHandler.CreateAccount)
 	accounts.GET("/:accountNumber", accountsHandler.GetAccountDetailByAccountNumber)
+	accounts.GET("", accountsHandler.GetAccountList)
 }
