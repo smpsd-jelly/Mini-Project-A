@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	"mini-project-a/internal/accounts/core/entity"
 	accountsPort "mini-project-a/internal/accounts/port"
 )
@@ -39,4 +40,17 @@ func (s *AccountsService) GetAccountDetailByAccountNumber(accountNumber string) 
 
 func (s *AccountsService) GetAccountList() ([]*entity.Accounts, error) {
 	return s.accountsRepo.GetAccountList()
+}
+
+func (s *AccountsService) CloseAccount(accountNumber string) (*entity.Accounts, error) {
+	account, err := s.accountsRepo.GetAccountDetailByAccountNumber(accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	if account.Status == "CLOSED" {
+		return nil, errors.New("account is already closed")
+	}
+
+	return s.accountsRepo.CloseAccount(accountNumber)
 }

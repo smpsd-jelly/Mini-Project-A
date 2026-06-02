@@ -87,3 +87,26 @@ func (h *AccountsHandler) GetAccountList(c *gin.Context) {
 		"items": response,
 	})
 }
+
+func (h *AccountsHandler) CloseAccount(c *gin.Context) {
+	accountNumber := c.Param("accountNumber")
+
+	_, err := h.accountsService.CloseAccount(accountNumber)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{
+				"message": "Account not found",
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Account closed successfully",
+	})
+}

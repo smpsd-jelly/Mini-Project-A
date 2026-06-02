@@ -91,3 +91,21 @@ func (r *AccountPostgresRepository) GetAccountList() ([]*entity.Accounts, error)
 
 	return accounts, nil
 }
+
+func (r *AccountPostgresRepository) CloseAccount(accountNumber string) (*entity.Accounts, error) {
+	query := `
+        UPDATE accounts
+        SET status = 'CLOSED',
+		    updated_at = NOW()
+        WHERE account_number = $1
+        RETURNING *`
+
+	var output Accounts
+
+	err := r.db.Get(&output, query, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return output.ToEntity(), nil
+}
