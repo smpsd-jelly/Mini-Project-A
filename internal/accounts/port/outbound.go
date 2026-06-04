@@ -4,6 +4,7 @@ import "mini-project-a/internal/accounts/core/entity"
 
 type AccountsRepository interface {
 	CreateAccount(account *entity.Accounts) (*entity.Accounts, error)
+	GetAccountByCitizenID(citizenID string) (*entity.Accounts, error)
 	GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error)
 }
 

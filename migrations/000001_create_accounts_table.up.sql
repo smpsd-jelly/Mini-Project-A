@@ -1,4 +1,3 @@
-CREATE SEQUENCE account_number_seq START 1;
 CREATE SEQUENCE IF NOT EXISTS account_number_seq
 START WITH 1
 INCREMENT BY 1;
