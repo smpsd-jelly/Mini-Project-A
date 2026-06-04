@@ -1,14 +1,14 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
-func ConnectPostgres() (*sql.DB, error) {
+func ConnectPostgres() (*sqlx.DB, error) {
 	host := os.Getenv("DB_HOST")
 	if host == "" {
 		host = "localhost"
@@ -32,7 +32,7 @@ func ConnectPostgres() (*sql.DB, error) {
 		sslMode,
 	)
 
-	db, err := sql.Open("postgres", dsn)
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}

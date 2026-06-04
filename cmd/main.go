@@ -5,7 +5,12 @@ import (
 	"os"
 	"time"
 
+	accountsHttp "mini-project-a/internal/accounts/adapter/inbound/http"
+	accountsPostgres "mini-project-a/internal/accounts/adapter/outbound/postgres"
+	accountsCore "mini-project-a/internal/accounts/core"
 	"mini-project-a/internal/infrastructure/database"
+	transactionsPostgres "mini-project-a/internal/transactions/adapter/outbound/postgres"
+	transactionsCore "mini-project-a/internal/transactions/core"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -31,6 +36,21 @@ func main() {
 
 	time.Local = loc
 	router := gin.Default()
+
+	api := router.Group("/api/v1")
+
+	accountsRepo := accountsPostgres.NewAccountPostgresRepository(db)
+	transactionsRepo := transactionsPostgres.NewTransactionsPostgresRepository(db)
+	transactionsService := transactionsCore.NewTransactionsService(transactionsRepo)
+
+	accountsService := accountsCore.NewAccountsService(
+		accountsRepo,
+		transactionsService,
+	)
+
+	accountsHandler := accountsHttp.NewAccountsHandler(accountsService)
+
+	accountsHttp.RegisterAccountsRoutes(api, accountsHandler)
 
 	port := os.Getenv("APP_PORT")
 	if port == "" {

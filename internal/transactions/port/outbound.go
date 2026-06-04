@@ -1,1 +1,7 @@
 package port
+
+import "mini-project-a/internal/transactions/core/entity"
+
+type TransactionsRepository interface {
+	CreateTransaction(transaction *entity.Transactions) (*entity.Transactions, error)
+}
