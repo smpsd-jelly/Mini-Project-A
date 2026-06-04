@@ -22,7 +22,10 @@ func NewAccountsService(accountsRepo accountsPort.AccountsRepository, initialDep
 func (s *AccountsService) CreateAccount(account *entity.Accounts) (*entity.Accounts, error) {
 
 	existingAccount, err := s.accountsRepo.GetAccountByCitizenID(account.CitizenID)
-	if err == nil && existingAccount != nil {
+	if err != nil {
+		return nil, err
+	}
+	if existingAccount != nil {
 		return nil, errors.New("account with the same citizen ID already exists")
 	}
 
