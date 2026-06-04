@@ -43,3 +43,14 @@ func (r *AccountPostgresRepository) CreateAccount(account *entity.Accounts) (*en
 	result := output.ToEntity()
 	return result, nil
 }
+
+func (r *AccountPostgresRepository) GetAccountByCitizenID(citizenID string) (*entity.Accounts, error) {
+	var account Accounts
+	query := `SELECT * FROM accounts WHERE citizen_id = $1`
+	err := r.db.Get(&account, query, citizenID)
+	if err != nil {
+		return nil, err
+	}
+	result := account.ToEntity()
+	return result, nil
+}
