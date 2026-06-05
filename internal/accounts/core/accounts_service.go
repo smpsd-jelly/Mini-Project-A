@@ -60,7 +60,7 @@ func (s *AccountsService) CloseAccount(accountNumber string) (*entity.Accounts, 
 		return nil, err
 	}
 
-	if account.Status == "CLOSED" {
+	if account.Status == constant.ACCOUNTS_STATUS_CLOSED {
 		return nil, errors.New("account is already closed")
 	}
 

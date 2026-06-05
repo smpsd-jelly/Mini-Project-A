@@ -1,7 +1,6 @@
 package http
 
 import (
-	"database/sql"
 	"net/http"
 
 	"mini-project-a/internal/accounts/core"
@@ -82,13 +81,6 @@ func (h *AccountsHandler) CloseAccount(c *gin.Context) {
 
 	_, err := h.accountsService.CloseAccount(accountNumber)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusNotFound, gin.H{
-				"message": "Account not found",
-			})
-			return
-		}
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -96,6 +88,6 @@ func (h *AccountsHandler) CloseAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Account closed successfully",
+		"message": "201 Created",
 	})
 }
