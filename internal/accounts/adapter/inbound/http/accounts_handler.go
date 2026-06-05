@@ -49,15 +49,8 @@ func (h *AccountsHandler) GetAccountDetailByAccountNumber(c *gin.Context) {
 
 	account, err := h.accountsService.GetAccountDetailByAccountNumber(accountNumber)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusNotFound, gin.H{
-				"message": "Account not found",
-			})
-			return
-		}
-
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Internal server error",
+			"message": err.Error(),
 		})
 		return
 	}
@@ -73,19 +66,15 @@ func (h *AccountsHandler) GetAccountList(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Internal server error",
+			"message": err.Error(),
 		})
 		return
 	}
 
-	response := make([]GetAccountDetailResponse, 0, len(accounts))
-	for _, account := range accounts {
-		response = append(response, ToGetAccountDetailResponse(account))
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"items": response,
-	})
+	c.JSON(
+		http.StatusOK,
+		ToGetAccountListResponse(accounts),
+	)
 }
 
 func (h *AccountsHandler) CloseAccount(c *gin.Context) {
