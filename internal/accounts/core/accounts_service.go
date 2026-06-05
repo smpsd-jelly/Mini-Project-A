@@ -45,3 +45,7 @@ func (s *AccountsService) CreateAccount(account *entity.Accounts) (*entity.Accou
 
 	return result, nil
 }
+
+func (s *AccountsService) GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error) {
+	return s.accountsRepo.GetAccountDetailByAccountNumber(accountNumber)
+}

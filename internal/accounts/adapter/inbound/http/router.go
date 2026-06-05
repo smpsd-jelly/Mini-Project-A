@@ -6,4 +6,5 @@ func RegisterAccountsRoutes(router *gin.RouterGroup, accountsHandler *AccountsHa
 	accounts := router.Group("/accounts")
 
 	accounts.POST("", accountsHandler.CreateAccount)
+	accounts.GET("/:accountNumber", accountsHandler.GetAccountDetailByAccountNumber)
 }

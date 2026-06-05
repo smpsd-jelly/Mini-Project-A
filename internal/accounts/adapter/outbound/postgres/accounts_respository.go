@@ -46,11 +46,24 @@ func (r *AccountPostgresRepository) CreateAccount(account *entity.Accounts) (*en
 
 func (r *AccountPostgresRepository) GetAccountByCitizenID(citizenID string) (*entity.Accounts, error) {
 	var account Accounts
-	query := `SELECT id, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts WHERE citizen_id = $1`
+	query := `SELECT id, account_number, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts WHERE citizen_id = $1`
 	err := r.db.Get(&account, query, citizenID)
 	if err != nil {
 		return nil, err
 	}
 	result := account.ToEntity()
 	return result, nil
+}
+
+func (r *AccountPostgresRepository) GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error) {
+	query := `SELECT id, account_number, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts WHERE account_number = $1`
+
+	var output Accounts
+
+	err := r.db.Get(&output, query, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return output.ToEntity(), nil
 }
