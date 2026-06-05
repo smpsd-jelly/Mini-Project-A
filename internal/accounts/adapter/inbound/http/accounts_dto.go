@@ -20,6 +20,10 @@ type GetAccountDetailResponse struct {
 	Status        string  `json:"status"`
 }
 
+type GetAccountListResponse struct {
+	Items []GetAccountDetailResponse `json:"items"`
+}
+
 func (r *CreateAccountRequest) ToAccountEntity() *entity.Accounts {
 	return &entity.Accounts{
 		OwnerName:   r.OwnerName,
@@ -37,5 +41,17 @@ func ToGetAccountDetailResponse(account *entity.Accounts) GetAccountDetailRespon
 		AccountType:   account.AccountType,
 		Balance:       account.Balance,
 		Status:        account.Status,
+	}
+}
+
+func ToGetAccountListResponse(accounts []*entity.Accounts) GetAccountListResponse {
+	items := make([]GetAccountDetailResponse, 0, len(accounts))
+
+	for _, account := range accounts {
+		items = append(items, ToGetAccountDetailResponse(account))
+	}
+
+	return GetAccountListResponse{
+		Items: items,
 	}
 }

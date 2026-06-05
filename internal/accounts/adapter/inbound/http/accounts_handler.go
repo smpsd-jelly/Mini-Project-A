@@ -65,17 +65,13 @@ func (h *AccountsHandler) GetAccountList(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Internal server error",
+			"message": err.Error(),
 		})
 		return
 	}
 
-	response := make([]GetAccountDetailResponse, 0, len(accounts))
-	for _, account := range accounts {
-		response = append(response, ToGetAccountDetailResponse(account))
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"items": response,
-	})
+	c.JSON(
+		http.StatusOK,
+		ToGetAccountListResponse(accounts),
+	)
 }
