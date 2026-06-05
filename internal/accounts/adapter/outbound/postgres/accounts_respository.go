@@ -69,7 +69,7 @@ func (r *AccountPostgresRepository) GetAccountDetailByAccountNumber(accountNumbe
 }
 
 func (r *AccountPostgresRepository) GetAccountList() ([]*entity.Accounts, error) {
-	query := `SELECT id, account_number, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts WHERE account_number = $1`
+	query := `SELECT id, account_number, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts`
 
 	var outputs []Accounts
 
