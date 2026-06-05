@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"mini-project-a/internal/accounts/core/entity"
+	"mini-project-a/internal/shared/constant"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -84,4 +85,22 @@ func (r *AccountPostgresRepository) GetAccountList() ([]*entity.Accounts, error)
 	}
 
 	return accounts, nil
+}
+
+func (r *AccountPostgresRepository) CloseAccount(accountNumber string) (*entity.Accounts, error) {
+	query := `
+        UPDATE accounts
+        SET status = $1,
+		    updated_at = NOW()
+        WHERE account_number = $2
+        RETURNING *`
+
+	var output Accounts
+
+	err := r.db.Get(&output, query, constant.ACCOUNTS_STATUS_CLOSED, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return output.ToEntity(), nil
 }

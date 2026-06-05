@@ -7,6 +7,7 @@ type AccountsRepository interface {
 	GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error)
 	GetAccountList() ([]*entity.Accounts, error)
 	GetAccountByCitizenID(citizenID string) (*entity.Accounts, error)
+	CloseAccount(accountNumber string) (*entity.Accounts, error)
 }
 
 type InitialDepositPort interface {
