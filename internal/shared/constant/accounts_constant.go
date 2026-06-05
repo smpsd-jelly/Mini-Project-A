@@ -1,0 +1,6 @@
+package constant
+
+const (
+	ACCOUNTS_STATUS_ACTIVE = "ACTIVE"
+	ACCOUNTS_STATUS_CLOSED = "CLOSED"
+)

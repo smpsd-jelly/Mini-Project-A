@@ -1,7 +1,6 @@
 package http
 
 import (
-	"database/sql"
 	"net/http"
 
 	"mini-project-a/internal/accounts/core"
@@ -49,15 +48,8 @@ func (h *AccountsHandler) GetAccountDetailByAccountNumber(c *gin.Context) {
 
 	account, err := h.accountsService.GetAccountDetailByAccountNumber(accountNumber)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusNotFound, gin.H{
-				"message": "Account not found",
-			})
-			return
-		}
-
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Internal server error",
+			"message": err.Error(),
 		})
 		return
 	}
