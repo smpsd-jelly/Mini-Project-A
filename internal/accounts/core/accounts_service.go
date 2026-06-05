@@ -49,3 +49,7 @@ func (s *AccountsService) CreateAccount(account *entity.Accounts) (*entity.Accou
 func (s *AccountsService) GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error) {
 	return s.accountsRepo.GetAccountDetailByAccountNumber(accountNumber)
 }
+
+func (s *AccountsService) GetAccountList() ([]*entity.Accounts, error) {
+	return s.accountsRepo.GetAccountList()
+}

@@ -67,3 +67,21 @@ func (r *AccountPostgresRepository) GetAccountDetailByAccountNumber(accountNumbe
 
 	return output.ToEntity(), nil
 }
+
+func (r *AccountPostgresRepository) GetAccountList() ([]*entity.Accounts, error) {
+	query := `SELECT id, account_number, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts`
+
+	var outputs []Accounts
+
+	err := r.db.Select(&outputs, query)
+	if err != nil {
+		return nil, err
+	}
+
+	accounts := make([]*entity.Accounts, 0, len(outputs))
+	for _, output := range outputs {
+		accounts = append(accounts, output.ToEntity())
+	}
+
+	return accounts, nil
+}
