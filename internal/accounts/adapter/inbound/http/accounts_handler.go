@@ -48,8 +48,8 @@ func (h *AccountsHandler) GetAccountDetailByAccountNumber(c *gin.Context) {
 
 	account, err := h.accountsService.GetAccountDetailByAccountNumber(accountNumber)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Account not found",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
 		})
 		return
 	}
