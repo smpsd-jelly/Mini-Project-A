@@ -88,6 +88,6 @@ func (h *AccountsHandler) CloseAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "201 Created",
+		"message": "200 OK",
 	})
 }
