@@ -16,11 +16,15 @@ func (s *TransactionsService) Deposit(
 	}
 
 	if account == nil {
-		return nil, errors.New("account not found")
+		return nil, errors.New("Account not found")
 	}
 
 	if account.Status == constant.ACCOUNTS_STATUS_CLOSED {
 		return nil, errors.New("Account is closed")
+	}
+
+	if transaction.Amount <= 0 {
+		return nil, errors.New("Amount must be greater than 0")
 	}
 
 	balanceBefore := account.Balance
