@@ -7,6 +7,7 @@ import (
 
 type TransactionsRepository interface {
 	CreateTransaction(transaction *entity.Transactions) (*entity.Transactions, error)
+	GetTransactionList() ([]*entity.Transactions, error)
 }
 
 type AccountReaderPort interface {

@@ -34,3 +34,20 @@ func (r *TransactionsPostgresRepository) CreateTransaction(transaction *entity.T
 	result := output.ToEntity()
 	return result, nil
 }
+
+func (r *TransactionsPostgresRepository) GetTransactionList() ([]*entity.Transactions, error) {
+	query := `SELECT id, account_id, transaction_type, amount, balance_before, balance_after, description, created_at FROM transactions ORDER BY id DESC`
+	var outputs []Transactions
+
+	err := r.db.Select(&outputs, query)
+	if err != nil {
+		return nil, err
+	}
+
+	transcations := make([]*entity.Transactions, 0, len(outputs))
+	for _, output := range outputs {
+		transcations = append(transcations, output.ToEntity())
+	}
+	return transcations, nil
+
+}
