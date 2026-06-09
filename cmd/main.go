@@ -9,6 +9,7 @@ import (
 	accountsPostgres "mini-project-a/internal/accounts/adapter/outbound/postgres"
 	accountsCore "mini-project-a/internal/accounts/core"
 	"mini-project-a/internal/infrastructure/database"
+	transactionsHttp "mini-project-a/internal/transactions/adapter/inbound/http"
 	transactionsPostgres "mini-project-a/internal/transactions/adapter/outbound/postgres"
 	transactionsCore "mini-project-a/internal/transactions/core"
 
@@ -41,7 +42,7 @@ func main() {
 
 	accountsRepo := accountsPostgres.NewAccountPostgresRepository(db)
 	transactionsRepo := transactionsPostgres.NewTransactionsPostgresRepository(db)
-	transactionsService := transactionsCore.NewTransactionsService(transactionsRepo)
+	transactionsService := transactionsCore.NewTransactionsService(transactionsRepo, accountsRepo)
 
 	accountsService := accountsCore.NewAccountsService(
 		accountsRepo,
@@ -51,6 +52,10 @@ func main() {
 	accountsHandler := accountsHttp.NewAccountsHandler(accountsService)
 
 	accountsHttp.RegisterAccountsRoutes(api, accountsHandler)
+
+	transactionsHandler := transactionsHttp.NewTransactionsHandler(transactionsService)
+
+	transactionsHttp.TransactionsRoutes(api, transactionsHandler)
 
 	port := os.Getenv("APP_PORT")
 	if port == "" {

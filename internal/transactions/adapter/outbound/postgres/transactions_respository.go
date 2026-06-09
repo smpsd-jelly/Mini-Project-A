@@ -17,7 +17,7 @@ func NewTransactionsPostgresRepository(db *sqlx.DB) *TransactionsPostgresReposit
 func (r *TransactionsPostgresRepository) CreateTransaction(transaction *entity.Transactions) (*entity.Transactions, error) {
 	model := FromEntity(transaction)
 	query := `INSERT INTO transactions (account_id, transaction_type, amount, balance_before, balance_after, description)
-	VALUES (:account_id, :transaction_type, :amount, :balance_before, :balance_after, :description)`
+	VALUES (:account_id, :transaction_type, :amount, :balance_before, :balance_after, :description) RETURNING *`
 	rows, err := r.db.NamedQuery(query, model)
 	if err != nil {
 		return nil, err
