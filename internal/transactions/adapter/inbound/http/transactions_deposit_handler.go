@@ -9,7 +9,7 @@ import (
 func (h *TransactionsHandler) CreateDeposit(c *gin.Context) {
 	accountNumber := c.Param("accountNumber")
 
-	var req DepositCreateRequest
+	var req TransactionRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
