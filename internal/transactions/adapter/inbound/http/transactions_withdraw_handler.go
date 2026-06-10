@@ -1,3 +1,10 @@
+package http
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func (h *TransactionsHandler) CreateWithdraw(c *gin.Context) {
 	accountNumber := c.Param("accountNumber")
