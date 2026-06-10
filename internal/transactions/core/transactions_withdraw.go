@@ -28,6 +28,10 @@ func (s *TransactionsService) Withdraw(accountNumber string, transaction *entity
 		return nil, errors.New("Amount must be greater than 0")
 	}
 
+	if transaction.Amount > account.Balance {
+		return nil, errors.New("Amount exceeds available balance")
+	}
+
 	balanceBefore := account.Balance
 	balanceAfter := balanceBefore - transaction.Amount
 
