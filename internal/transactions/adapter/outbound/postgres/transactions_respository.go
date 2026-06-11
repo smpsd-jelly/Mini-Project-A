@@ -48,7 +48,7 @@ func (r *TransactionsPostgresRepository) createTransaction(
 			amount,
 			balance_before,
 			balance_after,
-			description
+			descriptionwww
 		)
 		VALUES (
 			:account_id,

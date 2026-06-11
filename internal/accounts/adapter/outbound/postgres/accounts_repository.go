@@ -118,23 +118,6 @@ func (r *AccountPostgresRepository) CloseAccount(accountNumber string) (*entity.
 	return output.ToEntity(), nil
 }
 
-// func (r *AccountPostgresRepository) UpdateBalance(accountID int64, balance float64) error {
-// 	query := `UPDATE accounts SET balance = $1, updated_at = NOW() WHERE id = $2`
-// 	result, err := r.db.Exec(query, balance, accountID)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	rowsAffected, err := result.RowsAffected()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	if rowsAffected == 0 {
-// 		return fmt.Errorf("account id %d not found", accountID)
-// 	}
-
-// 	return nil
-// }
-
 func (r *AccountPostgresRepository) UpdateBalanceTx(tx *sqlx.Tx, accountID int64, balance float64) error {
 	query := `
 		UPDATE accounts

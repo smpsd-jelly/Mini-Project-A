@@ -41,13 +41,11 @@ func (s *TransactionsService) Deposit(
 	}
 
 	if err := s.accountReaderPort.UpdateBalanceTx(tx, account.ID, balanceAfter); err != nil {
-		tx.Rollback()
 		return nil, err
 	}
 
 	result, err := s.transactionsRepo.CreateTransactionTx(tx, transaction)
 	if err != nil {
-		tx.Rollback()
 		return nil, err
 	}
 
