@@ -5,7 +5,7 @@ import (
 )
 
 type TransactionRequest struct {
-	Amount      float64 `json:"amount",gt=0"`
+	Amount      float64 `json:"amount" binding:"required,gt=0"`
 	Description *string `json:"description,omitempty"`
 }
 
