@@ -30,14 +30,31 @@ func (s *TransactionsService) Deposit(
 	balanceBefore := account.Balance
 	balanceAfter := account.Balance + transaction.Amount
 
-	err = s.accountReaderPort.UpdateBalance(account.ID, balanceAfter)
-	if err != nil {
-		return nil, err
-	}
-
 	transaction.AccountID = account.ID
 	transaction.TransactionType = constant.TRANSACTIONS_TYPE_DEPOSIT
 	transaction.BalanceBefore = balanceBefore
 	transaction.BalanceAfter = balanceAfter
-	return s.CreateTransaction(transaction)
+
+	tx, err := s.transactionsRepo.BeginTx()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.accountReaderPort.UpdateBalanceTx(tx, account.ID, balanceAfter); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	result, err := s.transactionsRepo.CreateTransactionTx(tx, transaction)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	return result, nil
 }
