@@ -7,8 +7,9 @@ import (
 )
 
 func (h *TransactionsHandler) GetTransactionList(c *gin.Context) {
-	transcations, err := h.transactionsService.GetTransactionList()
+	accountNumber := c.Param("accountNumber")
 
+	transactions, err := h.transactionsService.GetTransactionList(accountNumber)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -18,6 +19,6 @@ func (h *TransactionsHandler) GetTransactionList(c *gin.Context) {
 
 	c.JSON(
 		http.StatusOK,
-		ToGetTransactionListResponse(transcations),
+		ToGetTransactionListResponse(transactions),
 	)
 }
