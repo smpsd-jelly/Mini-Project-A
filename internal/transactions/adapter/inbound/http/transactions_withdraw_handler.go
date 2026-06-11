@@ -14,6 +14,7 @@ func (h *TransactionsHandler) CreateWithdraw(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 
 	transactionEntity := req.ToTransactionEntity()
