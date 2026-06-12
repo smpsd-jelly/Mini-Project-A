@@ -11,6 +11,7 @@ type TransactionsRepository interface {
 	CreateTransaction(transaction *entity.Transactions) (*entity.Transactions, error)
 	BeginTx() (*sqlx.Tx, error)
 	CreateTransactionTx(tx *sqlx.Tx, transaction *entity.Transactions) (*entity.Transactions, error)
+	GetTransactionList(accountNumber string) ([]*entity.Transactions, error)
 }
 
 type AccountReaderPort interface {
