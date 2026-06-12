@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"errors"
+	"mini-project-a/internal/shared/port"
 	"mini-project-a/internal/transactions/core/entity"
 
 	"github.com/jmoiron/sqlx"
@@ -18,7 +20,7 @@ func NewTransactionsPostgresRepository(db *sqlx.DB) *TransactionsPostgresReposit
 	return &TransactionsPostgresRepository{db: db}
 }
 
-func (r *TransactionsPostgresRepository) BeginTx() (*sqlx.Tx, error) {
+func (r *TransactionsPostgresRepository) BeginTx() (port.Tx, error) {
 	return r.db.Beginx()
 }
 
@@ -29,10 +31,15 @@ func (r *TransactionsPostgresRepository) CreateTransaction(
 }
 
 func (r *TransactionsPostgresRepository) CreateTransactionTx(
-	tx *sqlx.Tx,
+	tx port.Tx,
 	transaction *entity.Transactions,
 ) (*entity.Transactions, error) {
-	return r.createTransaction(tx, transaction)
+	sqlxTx, ok := tx.(*sqlx.Tx)
+	if !ok {
+		return nil, errors.New("invalid transaction type")
+	}
+
+	return r.createTransaction(sqlxTx, transaction)
 }
 
 func (r *TransactionsPostgresRepository) createTransaction(
