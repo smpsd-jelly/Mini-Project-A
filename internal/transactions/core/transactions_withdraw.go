@@ -35,15 +35,29 @@ func (s *TransactionsService) Withdraw(accountNumber string, transaction *entity
 	balanceBefore := account.Balance
 	balanceAfter := balanceBefore - transaction.Amount
 
-	err = s.accountReaderPort.UpdateBalance(account.ID, balanceAfter)
-	if err != nil {
-		return nil, err
-	}
-
 	transaction.AccountID = account.ID
 	transaction.TransactionType = constant.TRANSACTIONS_TYPE_WITHDRAWAL
 	transaction.BalanceBefore = balanceBefore
 	transaction.BalanceAfter = balanceAfter
 
-	return s.CreateTransaction(transaction)
+	tx, err := s.transactionsRepo.BeginTx()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.accountReaderPort.UpdateBalanceTx(tx, account.ID, balanceAfter); err != nil {
+		return nil, err
+	}
+
+	result, err := s.transactionsRepo.CreateTransactionTx(tx, transaction)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	return result, nil
 }

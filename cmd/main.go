@@ -42,7 +42,7 @@ func main() {
 
 	accountsRepo := accountsPostgres.NewAccountPostgresRepository(db)
 	transactionsRepo := transactionsPostgres.NewTransactionsPostgresRepository(db)
-	transactionsService := transactionsCore.NewTransactionsService(transactionsRepo, accountsRepo)
+	transactionsService := transactionsCore.NewTransactionsService(db, transactionsRepo, accountsRepo)
 
 	accountsService := accountsCore.NewAccountsService(
 		accountsRepo,

@@ -1,6 +1,10 @@
 package port
 
-import "mini-project-a/internal/accounts/core/entity"
+import (
+	"mini-project-a/internal/accounts/core/entity"
+
+	"github.com/jmoiron/sqlx"
+)
 
 type AccountsRepository interface {
 	CreateAccount(account *entity.Accounts) (*entity.Accounts, error)
@@ -8,7 +12,7 @@ type AccountsRepository interface {
 	GetAccountList() ([]*entity.Accounts, error)
 	GetAccountByCitizenID(citizenID string) (*entity.Accounts, error)
 	CloseAccount(accountNumber string) (*entity.Accounts, error)
-	UpdateBalance(accountID int64, balance float64) error
+	UpdateBalanceTx(tx *sqlx.Tx, accountID int64, balance float64) error
 }
 
 type InitialDepositPort interface {
