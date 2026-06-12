@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"errors"
-	"mini-project-a/internal/shared/port"
+	sharedPort "mini-project-a/internal/shared/port"
 	"mini-project-a/internal/transactions/core/entity"
 
 	"github.com/jmoiron/sqlx"
@@ -20,7 +20,7 @@ func NewTransactionsPostgresRepository(db *sqlx.DB) *TransactionsPostgresReposit
 	return &TransactionsPostgresRepository{db: db}
 }
 
-func (r *TransactionsPostgresRepository) BeginTx() (port.Tx, error) {
+func (r *TransactionsPostgresRepository) BeginTx() (sharedPort.Tx, error) {
 	return r.db.Beginx()
 }
 
@@ -31,7 +31,7 @@ func (r *TransactionsPostgresRepository) CreateTransaction(
 }
 
 func (r *TransactionsPostgresRepository) CreateTransactionTx(
-	tx port.Tx,
+	tx sharedPort.Tx,
 	transaction *entity.Transactions,
 ) (*entity.Transactions, error) {
 	sqlxTx, ok := tx.(*sqlx.Tx)
