@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *TransactionsHandler) CreateDeposit(c *gin.Context) {
+func (h *TransactionsHandler) CreateWithdraw(c *gin.Context) {
 	accountNumber := c.Param("accountNumber")
 
 	var req TransactionRequest
@@ -18,8 +18,7 @@ func (h *TransactionsHandler) CreateDeposit(c *gin.Context) {
 	}
 
 	transactionEntity := req.ToTransactionEntity()
-
-	transaction, err := h.transactionsService.Deposit(accountNumber, transactionEntity)
+	transaction, err := h.transactionsService.Withdraw(accountNumber, transactionEntity)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -29,8 +28,7 @@ func (h *TransactionsHandler) CreateDeposit(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Deposit successful",
+		"message": "Withdraw successful",
 		"data":    transaction,
 	})
-
 }
