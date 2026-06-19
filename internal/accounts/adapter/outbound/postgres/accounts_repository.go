@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"mini-project-a/internal/accounts/core/entity"
 	"mini-project-a/internal/shared/constant"
+	sharedPort "mini-project-a/internal/shared/port"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -118,7 +119,11 @@ func (r *AccountPostgresRepository) CloseAccount(accountNumber string) (*entity.
 	return output.ToEntity(), nil
 }
 
-func (r *AccountPostgresRepository) UpdateBalanceTx(tx *sqlx.Tx, accountID int64, balance float64) error {
+func (r *AccountPostgresRepository) UpdateBalanceTx(
+	tx sharedPort.Tx,
+	accountID int64,
+	balance float64,
+) error {
 	query := `
 		UPDATE accounts
 		SET balance = $1, updated_at = NOW()
