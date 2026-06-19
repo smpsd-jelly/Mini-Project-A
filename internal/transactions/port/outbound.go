@@ -10,6 +10,7 @@ type TransactionsRepository interface {
 	CreateTransaction(transaction *entity.Transactions) (*entity.Transactions, error)
 	BeginTx() (sharedPort.Tx, error)
 	CreateTransactionTx(tx sharedPort.Tx, transaction *entity.Transactions) (*entity.Transactions, error)
+	GetTransactionList(accountNumber string) ([]*entity.Transactions, error)
 }
 
 type AccountReaderPort interface {

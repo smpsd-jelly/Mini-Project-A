@@ -6,5 +6,5 @@ func TransactionsRoutes(router *gin.RouterGroup, transactionsHandler *Transactio
 	transactions := router.Group("/accounts")
 	transactions.POST("/:accountNumber/deposit", transactionsHandler.CreateDeposit)
 	transactions.POST("/:accountNumber/withdraw", transactionsHandler.CreateWithdraw)
-
+	transactions.GET("/:accountNumber/transactions", transactionsHandler.GetTransactionList)
 }
