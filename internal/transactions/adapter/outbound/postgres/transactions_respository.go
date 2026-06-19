@@ -1,10 +1,16 @@
 package postgres
 
 import (
+	"errors"
+	sharedPort "mini-project-a/internal/shared/port"
 	"mini-project-a/internal/transactions/core/entity"
 
 	"github.com/jmoiron/sqlx"
 )
+
+type namedQueryer interface {
+	NamedQuery(query string, arg interface{}) (*sqlx.Rows, error)
+}
 
 type TransactionsPostgresRepository struct {
 	db *sqlx.DB
@@ -14,11 +20,55 @@ func NewTransactionsPostgresRepository(db *sqlx.DB) *TransactionsPostgresReposit
 	return &TransactionsPostgresRepository{db: db}
 }
 
-func (r *TransactionsPostgresRepository) CreateTransaction(transaction *entity.Transactions) (*entity.Transactions, error) {
+func (r *TransactionsPostgresRepository) BeginTx() (sharedPort.Tx, error) {
+	return r.db.Beginx()
+}
+
+func (r *TransactionsPostgresRepository) CreateTransaction(
+	transaction *entity.Transactions,
+) (*entity.Transactions, error) {
+	return r.createTransaction(r.db, transaction)
+}
+
+func (r *TransactionsPostgresRepository) CreateTransactionTx(
+	tx sharedPort.Tx,
+	transaction *entity.Transactions,
+) (*entity.Transactions, error) {
+	sqlxTx, ok := tx.(*sqlx.Tx)
+	if !ok {
+		return nil, errors.New("invalid transaction type")
+	}
+
+	return r.createTransaction(sqlxTx, transaction)
+}
+
+func (r *TransactionsPostgresRepository) createTransaction(
+	db namedQueryer,
+	transaction *entity.Transactions,
+) (*entity.Transactions, error) {
 	model := FromEntity(transaction)
-	query := `INSERT INTO transactions (account_id, transaction_type, amount, balance_before, balance_after, description)
-	VALUES (:account_id, :transaction_type, :amount, :balance_before, :balance_after, :description)`
-	rows, err := r.db.NamedQuery(query, model)
+
+	query := `
+		INSERT INTO transactions (
+			account_id,
+			transaction_type,
+			amount,
+			balance_before,
+			balance_after,
+			description
+		)
+		VALUES (
+			:account_id,
+			:transaction_type,
+			:amount,
+			:balance_before,
+			:balance_after,
+			:description
+		)
+		RETURNING *
+	`
+
+	rows, err := db.NamedQuery(query, model)
 	if err != nil {
 		return nil, err
 	}
@@ -26,11 +76,10 @@ func (r *TransactionsPostgresRepository) CreateTransaction(transaction *entity.T
 
 	var output Transactions
 	if rows.Next() {
-		err = rows.StructScan(&output)
-		if err != nil {
+		if err := rows.StructScan(&output); err != nil {
 			return nil, err
 		}
 	}
-	result := output.ToEntity()
-	return result, nil
+
+	return output.ToEntity(), nil
 }
