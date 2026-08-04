@@ -9,5 +9,5 @@ func RegisterAccountsRoutes(router *gin.RouterGroup, accountsHandler *AccountsHa
 	accounts.GET("/:accountNumber", accountsHandler.GetAccountDetailByAccountNumber)
 	accounts.GET("", accountsHandler.GetAccountList)
 	accounts.PATCH("/:accountNumber/close", accountsHandler.CloseAccount)
-
+	accounts.PATCH("/reopen/:accountNumber", accountsHandler.ReopenAccountHandler)
 }

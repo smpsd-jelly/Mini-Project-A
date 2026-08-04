@@ -7,4 +7,5 @@ type AccountsService interface {
 	GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error)
 	GetAccountList() ([]*entity.Accounts, error)
 	CloseAccount(accountNumber string) (*entity.Accounts, error)
+	ReopenAccount(accountNumber string) (*entity.Accounts, error)
 }

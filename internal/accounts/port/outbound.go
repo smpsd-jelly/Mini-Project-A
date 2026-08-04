@@ -17,6 +17,7 @@ type AccountsRepository interface {
 	GetAccountByCitizenID(citizenID string) (*entity.Accounts, error)
 	CloseAccount(accountNumber string) (*entity.Accounts, error)
 	UpdateBalanceTx(tx sharedPort.Tx, accountID int64, balance float64) error
+	ReopenAccountRepo(accountNumber string) (*entity.Accounts, error)
 }
 
 type InitialDepositPort interface {
