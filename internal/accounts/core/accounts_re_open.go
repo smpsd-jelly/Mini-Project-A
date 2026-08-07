@@ -1,11 +1,3 @@
-// func (a *AccountsService) ReopenAccount(accountNumber String) (*entity.Accounts, error) {
-// 	//get Account Number
-// 	//check status == 'ACTIVE' -> error
-// 	//Update status to ACTIVE
-// 	//RETURN accounts new detail to handler
-//
-// }
-
 package core
 
 import (
@@ -15,7 +7,7 @@ import (
 )
 
 func (s *AccountsService) ReopenAccount(accountNumber string) (*entity.Accounts, error) {
-	account, err := s.accountsRepo.GetAccountDetailByAccountNumber(accountNumber)
+	account, err := s.accountsRepo.GetAccountDetailByAccountNumberRepo(accountNumber)
 	if err != nil {
 		return nil, err
 	}

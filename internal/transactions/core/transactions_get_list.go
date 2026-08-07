@@ -8,7 +8,7 @@ import (
 func (s *TransactionsService) GetTransactionList(
 	accountNumber string,
 ) ([]*entity.Transactions, error) {
-	account, err := s.accountReaderPort.GetAccountDetailByAccountNumber(accountNumber)
+	account, err := s.accountReaderPort.GetAccountDetailByAccountNumberRepo(accountNumber)
 	if err != nil {
 		return nil, err
 	}

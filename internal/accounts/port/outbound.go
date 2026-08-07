@@ -11,11 +11,11 @@ type Tx interface {
 }
 
 type AccountsRepository interface {
-	CreateAccount(account *entity.Accounts) (*entity.Accounts, error)
-	GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error)
-	GetAccountList() ([]*entity.Accounts, error)
-	GetAccountByCitizenID(citizenID string) (*entity.Accounts, error)
-	CloseAccount(accountNumber string) (*entity.Accounts, error)
+	CreateAccountRepo(account *entity.Accounts) (*entity.Accounts, error)
+	GetAccountDetailByAccountNumberRepo(accountNumber string) (*entity.Accounts, error)
+	GetAccountListRepo() ([]*entity.Accounts, error)
+	GetAccountByCitizenIDRepo(citizenID string) (*entity.Accounts, error)
+	CloseAccountRepo(accountNumber string) (*entity.Accounts, error)
 	UpdateBalanceTx(tx sharedPort.Tx, accountID int64, balance float64) error
 	ReopenAccountRepo(accountNumber string) (*entity.Accounts, error)
 }

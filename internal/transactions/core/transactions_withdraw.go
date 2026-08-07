@@ -7,7 +7,7 @@ import (
 )
 
 func (s *TransactionsService) Withdraw(accountNumber string, transaction *entity.Transactions) (*entity.Transactions, error) {
-	account, err := s.accountReaderPort.GetAccountDetailByAccountNumber(accountNumber)
+	account, err := s.accountReaderPort.GetAccountDetailByAccountNumberRepo(accountNumber)
 	if err != nil {
 		return nil, err
 	}

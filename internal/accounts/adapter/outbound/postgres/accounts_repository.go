@@ -19,7 +19,7 @@ func NewAccountPostgresRepository(db *sqlx.DB) *AccountPostgresRepository {
 	}
 }
 
-func (r *AccountPostgresRepository) CreateAccount(account *entity.Accounts) (*entity.Accounts, error) {
+func (r *AccountPostgresRepository) CreateAccountRepo(account *entity.Accounts) (*entity.Accounts, error) {
 	model := FromEntity(account)
 	query := `INSERT INTO accounts (owner_name, citizen_id, phone_number, account_type, balance, status)
 	VALUES (
@@ -47,7 +47,7 @@ func (r *AccountPostgresRepository) CreateAccount(account *entity.Accounts) (*en
 	return result, nil
 }
 
-func (r *AccountPostgresRepository) GetAccountByCitizenID(citizenID string) (*entity.Accounts, error) {
+func (r *AccountPostgresRepository) GetAccountByCitizenIDRepo(citizenID string) (*entity.Accounts, error) {
 	var account Accounts
 
 	query := `
@@ -70,7 +70,7 @@ func (r *AccountPostgresRepository) GetAccountByCitizenID(citizenID string) (*en
 	return account.ToEntity(), nil
 }
 
-func (r *AccountPostgresRepository) GetAccountDetailByAccountNumber(accountNumber string) (*entity.Accounts, error) {
+func (r *AccountPostgresRepository) GetAccountDetailByAccountNumberRepo(accountNumber string) (*entity.Accounts, error) {
 	query := `SELECT id, account_number, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts WHERE account_number = $1`
 
 	var output Accounts
@@ -83,7 +83,7 @@ func (r *AccountPostgresRepository) GetAccountDetailByAccountNumber(accountNumbe
 	return output.ToEntity(), nil
 }
 
-func (r *AccountPostgresRepository) GetAccountList() ([]*entity.Accounts, error) {
+func (r *AccountPostgresRepository) GetAccountListRepo() ([]*entity.Accounts, error) {
 	query := `SELECT id, account_number, owner_name, citizen_id, phone_number, account_type, balance, status, created_at, updated_at FROM accounts`
 
 	var outputs []Accounts
@@ -101,7 +101,7 @@ func (r *AccountPostgresRepository) GetAccountList() ([]*entity.Accounts, error)
 	return accounts, nil
 }
 
-func (r *AccountPostgresRepository) CloseAccount(accountNumber string) (*entity.Accounts, error) {
+func (r *AccountPostgresRepository) CloseAccountRepo(accountNumber string) (*entity.Accounts, error) {
 	query := `
         UPDATE accounts
         SET status = $1,
@@ -132,4 +132,22 @@ func (r *AccountPostgresRepository) UpdateBalanceTx(
 
 	_, err := tx.Exec(query, balance, accountID)
 	return err
+}
+
+func (r *AccountPostgresRepository) ReopenAccountRepo(accountNumber string) (*entity.Accounts, error) {
+	query := `
+        UPDATE accounts
+        SET status = $1,
+		    updated_at = NOW()
+        WHERE account_number = $2
+        RETURNING *`
+
+	var output Accounts
+
+	err := r.db.Get(&output, query, constant.ACCOUNTS_STATUS_ACTIVE, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return output.ToEntity(), nil
 }

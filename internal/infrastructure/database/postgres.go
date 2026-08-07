@@ -23,7 +23,7 @@ func ConnectPostgres() (*sqlx.DB, error) {
 	sslMode := os.Getenv("DB_SSLMODE")
 
 	dsn := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=Asia/Bangkok",
 		host,
 		port,
 		user,

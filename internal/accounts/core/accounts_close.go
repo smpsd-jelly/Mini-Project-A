@@ -7,7 +7,7 @@ import (
 )
 
 func (s *AccountsService) CloseAccount(accountNumber string) (*entity.Accounts, error) {
-	account, err := s.accountsRepo.GetAccountDetailByAccountNumber(accountNumber)
+	account, err := s.accountsRepo.GetAccountDetailByAccountNumberRepo(accountNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -16,5 +16,5 @@ func (s *AccountsService) CloseAccount(accountNumber string) (*entity.Accounts, 
 		return nil, errors.New("account is already closed")
 	}
 
-	return s.accountsRepo.CloseAccount(accountNumber)
+	return s.accountsRepo.CloseAccountRepo(accountNumber)
 }
