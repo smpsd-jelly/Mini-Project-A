@@ -1,6 +1,7 @@
 package http
 
 import (
+	responses "mini-project-a/internal/shared/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,14 +11,23 @@ func (h *AccountsHandler) GetAccountList(c *gin.Context) {
 	accounts, err := h.accountsService.GetAccountList()
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-		})
+		responses.Error(
+			c,
+			http.StatusInternalServerError,
+			"E9001",
+			"Internal server error",
+		)
 		return
 	}
 
-	c.JSON(
+	response := ToGetAccountListResponse(accounts)
+
+	responses.Success(
+		c,
 		http.StatusOK,
-		ToGetAccountListResponse(accounts),
+		"S0000",
+		"Accounts retrieved successfully",
+		response,
 	)
+
 }

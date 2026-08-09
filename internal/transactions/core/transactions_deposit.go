@@ -1,6 +1,7 @@
 package core
 
 import (
+	"database/sql"
 	"errors"
 	"mini-project-a/internal/shared/constant"
 	"mini-project-a/internal/transactions/core/entity"
@@ -11,20 +12,17 @@ func (s *TransactionsService) Deposit(
 	transaction *entity.Transactions,
 ) (*entity.Transactions, error) {
 	account, err := s.accountReaderPort.GetAccountDetailByAccountNumberRepo(accountNumber)
+
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrAccountNotFound
+		}
+
 		return nil, err
 	}
 
-	if account == nil {
-		return nil, errors.New("Account not found")
-	}
-
 	if account.Status == constant.ACCOUNTS_STATUS_CLOSED {
-		return nil, errors.New("Account is closed")
-	}
-
-	if transaction.Amount <= 0 {
-		return nil, errors.New("Amount must be greater than 0")
+		return nil, ErrAccountIsClosed
 	}
 
 	balanceBefore := account.Balance

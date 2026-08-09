@@ -1,7 +1,9 @@
 package http
 
 import (
-	"log"
+	"errors"
+	"mini-project-a/internal/accounts/core"
+	"mini-project-a/internal/shared/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,25 +13,56 @@ func (h *AccountsHandler) CreateAccount(c *gin.Context) {
 	var req CreateAccountRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
+		response.ValidateError(
+			c,
+			http.StatusBadRequest,
+			"E1001",
+			"Validation failed.",
+			response.FormatValidationErrors(err),
+		)
+
 		return
 	}
 
 	account := req.ToAccountEntity()
 
-	_, err := h.accountsService.CreateAccount(account)
+	createdAccount, err := h.accountsService.CreateAccount(account)
 
 	if err != nil {
-		log.Println("CreateAccount error:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-		})
-		return
+
+		switch {
+		case errors.Is(err, core.ErrCitizenIDAlreadyExists):
+			response.Error(
+				c,
+				http.StatusConflict,
+				"E3001",
+				"Account with the same citizen ID already exists",
+			)
+
+		case errors.Is(err, core.ErrAccountNumberExists):
+			response.Error(
+				c,
+				http.StatusConflict,
+				"E3001",
+				"Account Number already exists",
+			)
+
+		default:
+			response.Error(
+				c,
+				http.StatusInternalServerError,
+				"E9001",
+				"Internal server error",
+			)
+			return
+		}
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "201 Created",
-	})
+	response.Success(
+		c,
+		http.StatusCreated,
+		"S0001",
+		"Account created successfully.",
+		createdAccount,
+	)
 }

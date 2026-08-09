@@ -14,7 +14,7 @@ type TransactionsRepository interface {
 }
 
 type AccountReaderPort interface {
-	GetAccountDetailByAccountNumber(
+	GetAccountDetailByAccountNumberRepo(
 		accountNumber string,
 	) (*accountEntity.Accounts, error)
 	UpdateBalanceTx(tx sharedPort.Tx, accountID int64, balance float64) error

@@ -1,6 +1,7 @@
 package core
 
 import (
+	"database/sql"
 	"errors"
 	"mini-project-a/internal/transactions/core/entity"
 )
@@ -8,13 +9,14 @@ import (
 func (s *TransactionsService) GetTransactionList(
 	accountNumber string,
 ) ([]*entity.Transactions, error) {
-	account, err := s.accountReaderPort.GetAccountDetailByAccountNumberRepo(accountNumber)
-	if err != nil {
-		return nil, err
-	}
 
-	if account == nil {
-		return nil, errors.New("account not found")
+	_, err := s.accountReaderPort.GetAccountDetailByAccountNumberRepo(accountNumber)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrAccountNotFound
+
+		}
+		return nil, err
 	}
 
 	return s.transactionsRepo.GetTransactionList(accountNumber)

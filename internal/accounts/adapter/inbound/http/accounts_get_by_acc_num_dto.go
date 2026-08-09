@@ -2,6 +2,10 @@ package http
 
 import "mini-project-a/internal/accounts/core/entity"
 
+type AccountNumberURI struct {
+	AccountNumber string `uri:"accountNumber" binding:"required,len=10,numeric"`
+}
+
 type GetAccountDetailResponse struct {
 	AccountNumber string  `json:"account_number"`
 	OwnerName     string  `json:"owner_name"`

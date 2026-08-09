@@ -1,24 +1,53 @@
 package http
 
 import (
+	"errors"
+	"mini-project-a/internal/shared/response"
+	"mini-project-a/internal/transactions/core"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h *TransactionsHandler) GetTransactionList(c *gin.Context) {
-	accountNumber := c.Param("accountNumber")
+	var uri AccountNumberURI
+	if err := c.ShouldBindUri(&uri); err != nil {
+		response.ValidateError(
+			c,
+			http.StatusBadRequest,
+			"E1001",
+			"Validation failed",
+			response.FormatValidationErrors(err),
+		)
+	}
 
-	transactions, err := h.transactionsService.GetTransactionList(accountNumber)
+	transactions, err := h.transactionsService.GetTransactionList(uri.AccountNumber)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-		})
+		switch {
+		case errors.Is(err, core.ErrAccountNotFound):
+			response.Error(
+				c,
+				http.StatusNotFound,
+				"E4001",
+				"Account not found",
+			)
+		default:
+			response.Error(
+				c,
+				http.StatusInternalServerError,
+				"E9001",
+				"Internal server error",
+			)
+		}
+
 		return
 	}
 
-	c.JSON(
+	response.Success(
+		c,
 		http.StatusOK,
-		ToGetTransactionListResponse(transactions),
+		"S0001",
+		"Transactions retrieved successfully",
+		transactions,
 	)
 }
