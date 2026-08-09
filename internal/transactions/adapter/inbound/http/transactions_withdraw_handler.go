@@ -21,6 +21,7 @@ func (h *TransactionsHandler) CreateWithdraw(c *gin.Context) {
 			"Validation failed",
 			response.FormatValidationErrors(err),
 		)
+		return
 	}
 
 	var req TransactionRequest

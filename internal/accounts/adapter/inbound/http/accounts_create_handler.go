@@ -36,7 +36,7 @@ func (h *AccountsHandler) CreateAccount(c *gin.Context) {
 				c,
 				http.StatusConflict,
 				"E3001",
-				"Account with the same citizen ID already exists",
+				"Citizen ID already exists",
 			)
 
 		case errors.Is(err, core.ErrAccountNumberExists):
@@ -54,8 +54,8 @@ func (h *AccountsHandler) CreateAccount(c *gin.Context) {
 				"E9001",
 				"Internal server error",
 			)
-			return
 		}
+		return
 	}
 
 	response.Success(

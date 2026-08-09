@@ -3,7 +3,6 @@ package http
 import (
 	"errors"
 	"mini-project-a/internal/accounts/core"
-	"mini-project-a/internal/shared/response"
 	responses "mini-project-a/internal/shared/response"
 	"net/http"
 
@@ -27,14 +26,14 @@ func (h *AccountsHandler) ReopenAccountHandler(c *gin.Context) {
 	if err != nil {
 		switch {
 		case errors.Is(err, core.ErrAccountNotFound):
-			response.Error(
+			responses.Error(
 				c,
 				http.StatusNotFound,
 				"E4001",
 				"Account not found",
 			)
 		case errors.Is(err, core.ErrAccountAlreadyActive):
-			response.Error(
+			responses.Error(
 				c,
 				http.StatusConflict,
 				"E3001",
@@ -47,22 +46,18 @@ func (h *AccountsHandler) ReopenAccountHandler(c *gin.Context) {
 				"E9001",
 				"Internal server error",
 			)
-			return
 		}
+		return
 	}
-
-	return
 
 	account := ToReOpenAccountDetailResponse(accounts)
 
-	if err == nil {
-		responses.Success(
-			c,
-			http.StatusOK,
-			"S0000",
-			"Account Re-open successfully",
-			account,
-		)
-	}
+	responses.Success(
+		c,
+		http.StatusOK,
+		"S0000",
+		"Account Re-open successfully",
+		account,
+	)
 
 }

@@ -52,19 +52,17 @@ func (h *AccountsHandler) CloseAccount(c *gin.Context) {
 				"E9001",
 				"Internal server error",
 			)
-			return
 
 		}
+		return
 	}
 
-	if err == nil {
-		response.Success(
-			c,
-			http.StatusOK,
-			"S0000",
-			"Account closed successfully",
-			account,
-		)
-	}
+	response.Success(
+		c,
+		http.StatusOK,
+		"S0000",
+		"Account closed successfully",
+		account,
+	)
 
 }

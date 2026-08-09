@@ -19,6 +19,7 @@ func (h *TransactionsHandler) GetTransactionList(c *gin.Context) {
 			"Validation failed",
 			response.FormatValidationErrors(err),
 		)
+		return
 	}
 
 	transactions, err := h.transactionsService.GetTransactionList(uri.AccountNumber)
